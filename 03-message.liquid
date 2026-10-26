@@ -1,4 +1,4 @@
-{% comment %}
+{%- comment -%}
   First-credit nudge: push body and email headline.
 
   Cases:
@@ -7,22 +7,39 @@
     3. Nothing saved + the call fails    -> generic copy, still sends
     4. No credit, or balance missing     -> abort the send
 
-  The Connected Content call only runs in case 2, so most sends make no
-  external request. The endpoint is a placeholder for a recommendations
-  service; attribute names are illustrative and map to inKind's schema.
-{% endcomment %}
+  Notes:
+  - {%- -%} whitespace control keeps tag lines from adding blank lines to the push.
+  - The balance is checked for presence before it's compared, because comparing a
+    missing value to 0 is an error in Liquid; abort_message stops rendering at once.
+  - wallet_balance_display is a preformatted string ("25", "12.50") synced from the
+    warehouse; the raw balance is the fallback if it's missing.
+  - The Connected Content call only runs in case 2, so most sends make no external
+    request. The endpoint is a placeholder for a recommendations service.
+  - This copy is shared by push and email. In the HTML email version, add | escape
+    to restaurant names; push text doesn't need it.
+  - If saved_restaurants holds IDs rather than names, look up the name from the
+    restaurant Catalog before printing it.
+  - Attribute names are illustrative and map to inKind's schema.
+{%- endcomment -%}
 
-{% if custom_attribute.${wallet_balance} == blank or custom_attribute.${wallet_balance} <= 0 %}
-  {% abort_message("no unspent credit") %}
-{% endif %}
+{%- assign balance = custom_attribute.${wallet_balance} -%}
+{%- assign balance_display = custom_attribute.${wallet_balance_display} | default: balance -%}
+{%- assign first_saved = custom_attribute.${saved_restaurants} | first -%}
 
-{% if custom_attribute.${saved_restaurants} != blank %}
-Your ${{custom_attribute.${wallet_balance}}} is waiting at {{custom_attribute.${saved_restaurants} | first}}. Dinner tonight?
-{% else %}
-  {% connected_content https://api.example.com/v1/recommendations/nearby?user_id={{${user_id}}}&limit=3 :save recs :cache_max_age 900 :retry %}
-  {% if recs.__http_status_code__ != 200 or recs.restaurants == blank %}
-Your ${{custom_attribute.${wallet_balance}}} is waiting. Find a spot near you tonight.
-  {% else %}
-Your ${{custom_attribute.${wallet_balance}}} is waiting. Try {{recs.restaurants | map: 'name' | join: ', '}}.
-  {% endif %}
-{% endif %}
+{%- unless balance -%}
+  {%- abort_message("no balance attribute") -%}
+{%- endunless -%}
+{%- if balance <= 0 -%}
+  {%- abort_message("no unspent credit") -%}
+{%- endif -%}
+
+{%- if first_saved -%}
+Your ${{ balance_display }} is waiting at {{ first_saved }}. Dinner tonight?
+{%- else -%}
+  {%- connected_content https://api.example.com/v1/recommendations/nearby?user_id={{ ${user_id} | url_encode }}&limit=3 :save recs :cache_max_age 900 :retry -%}
+  {%- if recs.__http_status_code__ != 200 or recs.restaurants.size == 0 -%}
+Your ${{ balance_display }} is waiting. Find a spot near you tonight.
+  {%- else -%}
+Your ${{ balance_display }} is waiting. Nearby: {{ recs.restaurants | map: 'name' | join: ', ' | truncate: 80 }}
+  {%- endif -%}
+{%- endif -%}

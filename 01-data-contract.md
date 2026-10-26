@@ -8,7 +8,8 @@ The journey needs browse intent, credit, and purchase state on the Braze profile
 
 | Name | Type | Owner and path | Used for |
 |---|---|---|---|
-| `wallet_balance` | Custom attribute (number) | Warehouse → Cloud Data Ingestion | Entry filter, message copy, abort |
+| `wallet_balance` | Custom attribute (number) | Warehouse → Cloud Data Ingestion | Entry filter, abort |
+| `wallet_balance_display` | Custom attribute (string, e.g. "25" or "12.50") | Warehouse → Cloud Data Ingestion | Message copy, so Liquid never formats currency |
 | `first_transaction_at` | Custom attribute (time) | Warehouse → Cloud Data Ingestion | Entry filter (blank = never paid) |
 | `saved_restaurants` | Custom attribute (array of names or IDs) | Backend → `/users/track` | Message personalization |
 | `restaurant_saved` | Custom event (`restaurant_id`, `cuisine`) | App SDK or backend → `/users/track` | Entry trigger |
@@ -109,8 +110,11 @@ SELECT
   u.user_id                         AS EXTERNAL_ID,
   GREATEST(w.updated_at, COALESCE(t.first_at, w.updated_at)) AS UPDATED_AT,
   OBJECT_CONSTRUCT(
-    'wallet_balance',       w.balance,
-    'first_transaction_at', t.first_at
+    'wallet_balance',         w.balance,
+    'wallet_balance_display', IFF(w.balance = FLOOR(w.balance),
+                                  TO_VARCHAR(w.balance::INT),
+                                  TRIM(TO_VARCHAR(w.balance, '9999990.00'))),
+    'first_transaction_at',   t.first_at
   )                                 AS PAYLOAD
 FROM users u
 JOIN wallets w
@@ -123,7 +127,7 @@ LEFT JOIN (
   ON t.user_id = u.user_id;
 ```
 
-`OBJECT_CONSTRUCT` leaves out null values, so a user with no transactions gets no `first_transaction_at`, which is what the entry filter expects.
+`OBJECT_CONSTRUCT` leaves out null values, so a user with no transactions gets no `first_transaction_at`, which is what the entry filter expects. `wallet_balance_display` drops the decimals for whole-dollar balances ("25") and keeps two otherwise ("12.50"), so the message never shows "$25.0".
 
 ---
 

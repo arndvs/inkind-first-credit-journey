@@ -8,6 +8,7 @@ Success is a higher first-purchase rate within 7 days of entry than the 10% cont
 
 - [ ] Test profile shows each event and attribute with the right type (User Search, event user log)
 - [ ] Liquid preview for five test users: saved restaurant, nothing saved, nothing saved with the recommendations endpoint down, zero balance, no balance attribute (last two abort)
+- [ ] Rendered push has no leading or trailing blank lines, shows "$25" and "$12.50" correctly, and stays under the push length limit with three long restaurant names
 - [ ] Cloud Data Ingestion sync run shows the expected row count, and a test user's `wallet_balance` updates after a change in Snowflake
 - [ ] Braze audience count matches the warehouse SQL within an expected margin
 - [ ] Send time resolves to the user's local time; quiet hours respected
