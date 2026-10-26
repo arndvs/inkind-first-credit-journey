@@ -1,0 +1,28 @@
+{% comment %}
+  First-credit nudge: push body and email headline.
+
+  Cases:
+    1. Credit left + a saved restaurant  -> name the restaurant
+    2. Credit left + nothing saved       -> Connected Content call for three nearby picks
+    3. Nothing saved + the call fails    -> generic copy, still sends
+    4. No credit, or balance missing     -> abort the send
+
+  The Connected Content call only runs in case 2, so most sends make no
+  external request. The endpoint is a placeholder for a recommendations
+  service; attribute names are illustrative and map to inKind's schema.
+{% endcomment %}
+
+{% if custom_attribute.${wallet_balance} == blank or custom_attribute.${wallet_balance} <= 0 %}
+  {% abort_message("no unspent credit") %}
+{% endif %}
+
+{% if custom_attribute.${saved_restaurants} != blank %}
+Your ${{custom_attribute.${wallet_balance}}} is waiting at {{custom_attribute.${saved_restaurants} | first}}. Dinner tonight?
+{% else %}
+  {% connected_content https://api.example.com/v1/recommendations/nearby?user_id={{${user_id}}}&limit=3 :save recs :cache_max_age 900 :retry %}
+  {% if recs.__http_status_code__ != 200 or recs.restaurants == blank %}
+Your ${{custom_attribute.${wallet_balance}}} is waiting. Find a spot near you tonight.
+  {% else %}
+Your ${{custom_attribute.${wallet_balance}}} is waiting. Try {{recs.restaurants | map: 'name' | join: ', '}}.
+  {% endif %}
+{% endif %}
