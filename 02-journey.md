@@ -64,8 +64,8 @@ Push carries the first nudge when it's allowed, email when it isn't, and one fol
 | Choice | Reason |
 |---|---|
 | Trigger on a save, not a schedule | A save is the strongest intent signal a non-buyer gives |
+| Saves only, for now | Repeat sessions without a save could be a second entry path, computed as `sessions_14d` in the warehouse and synced like `wallet_balance` |
 | 4:30 PM local | Lands while people decide where to eat; test against Intelligent Timing |
 | Push first | Timely, short, and links straight into the app |
 | One follow-up, then stop | Two touches over about two days is enough for a new user; more risks opt-outs |
 | 10% control | Proves the journey caused the purchases, not the referral itself |
-| Save only, no session trigger | Repeat sessions without a save could be a second entry path, computed as `sessions_14d` in the warehouse |
