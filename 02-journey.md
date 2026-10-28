@@ -21,18 +21,13 @@ Used to spot-check Braze's audience count before launch.
 ```sql
 SELECT u.user_id
 FROM users u
-JOIN wallets w        ON w.user_id = u.user_id
+JOIN wallets w           ON w.user_id = u.user_id
 LEFT JOIN transactions t ON t.user_id = u.user_id
-LEFT JOIN app_events e
-       ON e.user_id = u.user_id
-      AND e.event_at >= DATEADD(day, -14, CURRENT_DATE)
 WHERE w.balance > 0
-  AND t.user_id IS NULL
-GROUP BY u.user_id
-HAVING COUNT_IF(e.event_name = 'restaurant_saved') >= 1;
+  AND t.user_id IS NULL;
 ```
 
-This counts everyone eligible. Braze also requires push or email permission, so its count will be lower; the difference is users with no reachable channel.
+This counts everyone who matches the entry filters. The save is the trigger, so it isn't in this count. Braze also requires push or email permission, so its count will be lower; the difference is users with no reachable channel.
 
 ---
 

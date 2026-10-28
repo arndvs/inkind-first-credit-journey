@@ -130,6 +130,8 @@ LEFT JOIN (
 
 `OBJECT_CONSTRUCT` leaves out null values, so a user with no transactions gets no `first_transaction_at`, which is what the entry filter expects. `wallet_balance_display` drops the decimals for whole-dollar balances ("25") and keeps two otherwise ("12.50"), so the message never shows "$25.0".
 
+In production, `UPDATED_AT` should come from when the row was loaded or changed, not when the transaction happened, so late-arriving data still syncs. The view above derives it from event times for readability.
+
 ---
 
 ## 5. Sync rules
@@ -139,5 +141,5 @@ LEFT JOIN (
 | One owner per field: either the warehouse or the backend writes it, never both | Two writers race, and the profile ends up with whichever arrived last |
 | Send attributes only when they change (`UPDATED_AT` for the warehouse, change detection for the backend) | Avoids wasted data points and keeps the profile accurate |
 | Batch `/users/track` up to Braze's per-request object limit (75) | Throughput without hitting rate limits |
-| Idempotent sends keyed on event ID | A retried request can't double-count a save or a purchase |
+| Backend records each event ID it has sent | Braze doesn't dedupe custom events or purchases, so a retried job would double-count a save or a purchase unless the backend prevents it |
 | Reconcile nightly against the warehouse | Catches users whose events silently failed to sync |
