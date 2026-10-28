@@ -33,6 +33,8 @@ HAVING COUNT_IF(e.event_name = 'restaurant_saved') >= 1
     OR COUNT_IF(e.event_name = 'session_start') >= 3;
 ```
 
+This counts everyone eligible. Braze also requires push or email permission, so its count will be lower; the difference is users with no reachable channel.
+
 ---
 
 ## 2. The Canvas

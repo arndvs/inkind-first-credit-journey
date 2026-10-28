@@ -1,6 +1,6 @@
 # 01 — Data Contract
 
-The journey needs browse intent, credit, and purchase state on the Braze profile. The app, backend, and warehouse already know all of it; the work is getting it across the wire with one owner per field.
+The journey needs browse intent, credit, and purchase state on the Braze profile. The app, the Rails backend, and the warehouse already know all of it; the work is getting it across the wire with one owner per field.
 
 ---
 
@@ -11,14 +11,15 @@ The journey needs browse intent, credit, and purchase state on the Braze profile
 | `wallet_balance` | Custom attribute (number) | Warehouse → Cloud Data Ingestion | Entry filter, abort |
 | `wallet_balance_display` | Custom attribute (string, e.g. "25" or "12.50") | Warehouse → Cloud Data Ingestion | Message copy, so Liquid never formats currency |
 | `first_transaction_at` | Custom attribute (time) | Warehouse → Cloud Data Ingestion | Entry filter (blank = never paid) |
-| `saved_restaurants` | Custom attribute (array of names or IDs) | Backend → `/users/track` | Message personalization |
-| `restaurant_saved` | Custom event (`restaurant_id`, `cuisine`) | App SDK or backend → `/users/track` | Entry trigger |
-| `restaurant_viewed` | Custom event (`restaurant_id`) | App SDK or backend → `/users/track` | Intent signal |
-| `search_performed` | Custom event (`area`) | App SDK or backend → `/users/track` | Intent signal |
-| Purchase | Purchase event | Backend → `/users/track` | Exit criteria, conversion |
+| `saved_restaurants` | Custom attribute (array of restaurant IDs) | Rails backend → `/users/track` | Message personalization |
+| `restaurants` | Catalog (`id`, `name`, `deep_link`, `neighborhood`) | Rails backend → Catalogs API | Restaurant names and links in the message |
+| `restaurant_saved` | Custom event (`restaurant_id`, `cuisine`) | App SDK or Rails backend → `/users/track` | Entry trigger |
+| `restaurant_viewed` | Custom event (`restaurant_id`) | App SDK or Rails backend → `/users/track` | Intent signal |
+| `search_performed` | Custom event (`area`) | App SDK or Rails backend → `/users/track` | Intent signal |
+| Purchase | Purchase event | Rails backend → `/users/track` | Exit criteria, conversion |
 | Push / email subscription state | Standard | SDK, preferences | Channel routing |
 
-If `saved_restaurants` holds IDs rather than names, the message looks up names and deep links from a restaurant Catalog.
+`saved_restaurants` stores IDs because they stay stable when a restaurant changes its name; the message looks up the current name and deep link from the `restaurants` Catalog.
 
 Any other per-user value the messaging needs, such as an offer amount or threshold, follows the same path as `wallet_balance`: computed where the data lives, synced to the profile, read in Liquid.
 
@@ -35,7 +36,7 @@ Two paths, split by how fresh the data has to be:
 sequenceDiagram
     autonumber
     participant U as User (app)
-    participant BE as inKind backend
+    participant BE as Rails backend
     participant DW as Warehouse (Snowflake)
     participant BZ as Braze
     participant C as Canvas
@@ -66,7 +67,7 @@ When a user saves a restaurant:
   "attributes": [
     {
       "external_id": "u_123",
-      "saved_restaurants": ["Lola's Taqueria", "Harbor Noodle House"]
+      "saved_restaurants": ["r_456", "r_789"]
     }
   ],
   "events": [
@@ -141,4 +142,4 @@ LEFT JOIN (
 | Idempotent sends keyed on event ID | A retried request can't double-count a save or a purchase |
 | Reconcile nightly against the warehouse | Catches users whose events silently failed to sync |
 
-Restaurant names above are made up.
+IDs above are made up.
