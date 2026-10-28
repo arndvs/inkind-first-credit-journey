@@ -8,7 +8,7 @@ Users enter when they show intent but have never paid and still have credit to s
 
 | Rule | Setting |
 |---|---|
-| Entry trigger | Performs `restaurant_saved`, or starts a third session within 14 days |
+| Entry trigger | Performs `restaurant_saved` |
 | Filters | `wallet_balance` > 0 AND `first_transaction_at` is blank AND (push opted in OR email subscribed) |
 | Re-entry | Once every 30 days at most |
 | Control group | 10% held out to measure lift |
@@ -29,8 +29,7 @@ LEFT JOIN app_events e
 WHERE w.balance > 0
   AND t.user_id IS NULL
 GROUP BY u.user_id
-HAVING COUNT_IF(e.event_name = 'restaurant_saved') >= 1
-    OR COUNT_IF(e.event_name = 'session_start') >= 3;
+HAVING COUNT_IF(e.event_name = 'restaurant_saved') >= 1;
 ```
 
 This counts everyone eligible. Braze also requires push or email permission, so its count will be lower; the difference is users with no reachable channel.
@@ -41,7 +40,7 @@ This counts everyone eligible. Braze also requires push or email permission, so 
 
 ```mermaid
 flowchart TD
-    A(["Entry<br/>saves a restaurant, or 3rd session<br/>credit unspent"]) --> B["Control split<br/>10% get nothing"]
+    A(["Entry<br/>saves a restaurant<br/>credit unspent"]) --> B["Control split<br/>10% get nothing"]
     B --> C["Delay<br/>until 4:30 PM user's local time"]
     C --> D{"Push<br/>allowed?"}
     D -->|"yes"| E["Push<br/>Your $25 is waiting at<br/>the restaurant you saved"]
@@ -69,3 +68,4 @@ Push carries the first nudge when it's allowed, email when it isn't, and one fol
 | Push first | Timely, short, and links straight into the app |
 | One follow-up, then stop | Two touches over about two days is enough for a new user; more risks opt-outs |
 | 10% control | Proves the journey caused the purchases, not the referral itself |
+| Save only, no session trigger | Repeat sessions without a save could be a second entry path, computed as `sessions_14d` in the warehouse |
