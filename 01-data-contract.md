@@ -1,10 +1,10 @@
 # 01 — Data Contract
 
-The journey needs browse intent, credit, and purchase state on the Braze profile. The app, the Rails backend, and the warehouse already know all of it; the work is getting it across the wire with one owner per field.
+The journey needs browse intent, credit, and purchase state on the Braze profile. The app, the Rails backend, and the warehouse should already have all of it; the work is getting it across the wire with one owner per field.
 
 ---
 
-## 1. What the profile needs
+## 1. What the journey needs
 
 | Name | Type | Owner and path | Used for |
 |---|---|---|---|
@@ -44,7 +44,7 @@ sequenceDiagram
     U->>BE: save restaurant / search / view
     BE->>BZ: POST /users/track (event + saved_restaurants)
     BE->>DW: event log
-    DW->>BZ: Cloud Data Ingestion: wallet_balance, first_transaction_at<br/>(only rows with a new UPDATED_AT)
+    DW->>BZ: Cloud Data Ingestion: wallet_balance, wallet_balance_display, first_transaction_at<br/>(only rows with a new UPDATED_AT)
     BZ->>C: restaurant_saved triggers entry check
     C->>C: filters: wallet_balance > 0, first_transaction_at blank
     C->>U: 4:30 PM local: push or email
@@ -141,5 +141,3 @@ LEFT JOIN (
 | Batch `/users/track` up to Braze's per-request object limit (75) | Throughput without hitting rate limits |
 | Idempotent sends keyed on event ID | A retried request can't double-count a save or a purchase |
 | Reconcile nightly against the warehouse | Catches users whose events silently failed to sync |
-
-IDs above are made up.

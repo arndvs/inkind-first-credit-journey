@@ -45,18 +45,18 @@ flowchart TD
     B --> C["Delay<br/>until 4:30 PM user's local time"]
     C --> D{"Push<br/>allowed?"}
     D -->|"yes"| E["Push<br/>Your $25 is waiting at<br/>the restaurant you saved"]
-    D -->|"no"| F["Email<br/>same message +<br/>three spots nearby"]
+    D -->|"no"| F["Email<br/>same message"]
     E --> G{"Action Path<br/>first purchase<br/>within 48 hours?"}
     F --> G
     G -->|"paid"| H(["Exit: converted"])
-    G -->|"no purchase"| I["Follow-up<br/>other channel,<br/>three spots near you"]
+    G -->|"no purchase"| I["Follow-up<br/>other channel if allowed,<br/>else same channel<br/>three spots near you"]
     I --> J(["Exit<br/>eligible again in 30 days"])
 
     style E fill:#2196f3,color:#fff
     style H fill:#4caf50,color:#fff
 ```
 
-Push carries the first nudge when it's allowed, email when it isn't, and one follow-up on the other channel catches anyone who doesn't buy within 48 hours. The Canvas exit criteria remove anyone who purchases at any step.
+Push carries the first nudge when it's allowed, email when it isn't, and one follow-up catches anyone who doesn't buy within 48 hours. The follow-up goes on the other channel when the user has one, and on the same channel otherwise. The Canvas exit criteria remove anyone who purchases at any step.
 
 ---
 

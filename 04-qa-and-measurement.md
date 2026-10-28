@@ -32,6 +32,7 @@ Success is a higher first-purchase rate within 7 days of entry than the 10% cont
 - Add the `restaurant_saved` event and the `saved_restaurants` update to the Rails backend, sent to `/users/track` from a background job so the request path never waits on Braze
 - Run it locally against Postgres and the Braze dev workspace, then check the test profile in User Search
 - Open a PR with the payload change and a test for the event shape
+- Backfill `saved_restaurants` for existing users with a one-time batched `/users/track` job, or through the warehouse sync, before the Canvas goes live, so people who saved restaurants before this shipped are eligible for personalization
 - Turn on the Canvas in production only after the checks in section 1 pass
 
 ---
