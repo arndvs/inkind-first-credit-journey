@@ -26,4 +26,4 @@ With only a few minutes, start with the "Who can receive it" checks in [`04-qa-a
 ## Conventions
 
 - **Every event, attribute, table, endpoint, and threshold name is illustrative**, to be mapped to inKind's existing schema. I don't have access to inKind's data model, so this is a best guess built from the public Braze docs and my experience as one new user, including the reward terms shown in the app. [`04-qa-and-measurement.md`](./04-qa-and-measurement.md) lists what I'd confirm first.
-- Timings and thresholds (4:30 PM send, 48-hour wait, 30-day re-entry, three sessions in 14 days) are starting points to test, not conclusions.
+- Timings and thresholds (4:30 PM send, three-day wait before a Friday follow-up, 30-day re-entry, three sessions in 14 days) are starting points to test, not conclusions.

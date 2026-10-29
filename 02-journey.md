@@ -11,7 +11,7 @@ Users enter when they show intent but have never paid and still have their refer
 | Entry trigger | Performs `restaurant_saved` |
 | Filters | `first_reward_amount` > 0 AND `first_transaction_at` is blank |
 | Send settings | Subscribed or opted-in, per channel |
-| Conversion event | Makes Purchase within 7 days |
+| Conversion event | Makes Purchase within 14 days |
 | Re-entry | Once every 30 days at most |
 | Control group | 10% held out to measure lift; a re-entering user stays in the same group |
 | Exit criteria | Makes any purchase |
@@ -43,17 +43,17 @@ flowchart TD
     C --> D{"Audience Path<br/>Push Enabled?"}
     D -->|"yes"| E["Push<br/>Your $25 toward a $50+ meal<br/>at the restaurant you saved"]
     D -->|"no"| F["Email<br/>same message"]
-    E --> G{"Action Path<br/>first purchase<br/>within 48 hours?"}
+    E --> G{"Action Path<br/>first purchase<br/>within 3 days?"}
     F --> G
     G -->|"paid"| H(["Exit: converted"])
-    G -->|"no purchase"| I["Follow-up<br/>other channel if allowed,<br/>else same channel<br/>three spots near you"]
+    G -->|"no purchase"| K["Delay<br/>until Friday 4:30 PM local"] --> I["Follow-up<br/>other channel if allowed,<br/>else same channel<br/>three spots near you"]
     I --> J(["Exit<br/>eligible again in 30 days"])
 
     style E fill:#2196f3,color:#fff
     style H fill:#4caf50,color:#fff
 ```
 
-Push carries the first nudge when push is enabled, email when it isn't, and one follow-up catches anyone who doesn't buy within 48 hours. The follow-up goes on the other channel when the user has one, and on the same channel otherwise. The Canvas exit criteria remove anyone who purchases at any step.
+Push carries the first nudge when push is enabled, email when it isn't, and anyone who hasn't bought within three days gets one follow-up on the next Friday at 4:30 PM, when weekend dinner plans get made. The follow-up goes on the other channel when the user has one, and on the same channel otherwise. The Canvas exit criteria remove anyone who purchases at any step.
 
 ---
 
@@ -66,7 +66,7 @@ Push carries the first nudge when push is enabled, email when it isn't, and one 
 | Push first | Timely, short, and links straight into the app |
 | Send Settings: subscribed or opted-in | This is an onboarding nudge to someone who just acted, not a broad promotion; consent lives in one place instead of in the entry filters |
 | Rule-based channel split, not Intelligent Channel | Intelligent Channel needs 3+ messages across 2+ channels, and a new user doesn't have that history yet |
-| One follow-up, then stop | Two touches over about two days is enough for a new user; more risks opt-outs |
+| One follow-up, timed before the weekend | Interest fades over a week or two, and weekend meals are when people go out. Two touches spread over about a week keep the reward in mind longer than two touches in two days; more than two risks opt-outs |
 | 10% control | Proves the journey caused the purchases, not the referral itself |
 | State the $50 minimum in the copy | The reward only applies to a food and beverage subtotal of $50 or more, paid in the app; copy that hides the minimum sets up a disappointment at checkout |
 | A first meal under $50 still counts as converted | The goal is a first meal; the reward stays unused on the account and could trigger its own follow-up |
@@ -82,9 +82,9 @@ A new user who opens the app three times in their first two weeks but never save
 | Entry trigger | Starts a session |
 | Filters | `first_reward_amount` > 0 AND `first_transaction_at` is blank AND total sessions ≥ 3 AND First Used App less than 14 days ago AND `saved_restaurants` is empty |
 | Send settings | Subscribed or opted-in, per channel |
-| Conversion event | Makes Purchase within 7 days |
+| Conversion event | Makes Purchase within 14 days |
 | Re-entry | Once |
 | Control group | 10%, as in the main Canvas |
 | Exit criteria | Makes any purchase, or performs `restaurant_saved` (the main Canvas takes over) |
 
-The flow is the main Canvas without the saved-restaurant branch: delay to 4:30 PM local, push if enabled, otherwise email, one follow-up after 48 hours. The same template sends the nearby-picks copy, because these users have no saved restaurant. Users who don't meet the filters never enter, so nothing counts against their re-entry until their third session.
+The flow is the main Canvas without the saved-restaurant branch: delay to 4:30 PM local, push if enabled, otherwise email, one follow-up on the next Friday if they haven't bought within three days. The same template sends the nearby-picks copy, because these users have no saved restaurant. Users who don't meet the filters never enter, so nothing counts against their re-entry until their third session.

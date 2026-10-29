@@ -1,6 +1,6 @@
 # 04 — QA, Shipping, and Measurement
 
-Success is a higher first-purchase rate within 7 days of entry than the 10% control group.
+Success is a higher first-purchase rate within 14 days of entry than the 10% control group.
 
 ---
 
@@ -13,7 +13,7 @@ Success is a higher first-purchase rate within 7 days of entry than the 10% cont
 - [ ] Send Settings are "subscribed or opted-in" on every message step, so an unsubscribed user who is in the Canvas still gets nothing on that channel
 - [ ] Audience previewed against known test users (opted in, opted out, unsubscribed) before launch
 - [ ] Braze audience count is at or below the warehouse SQL count, and the gap matches users with no push or email permission
-- [ ] Send time resolves to the user's local time; quiet hours respected
+- [ ] Send time resolves to the user's local time, including the Friday follow-up (confirm the Day of the week delay uses each user's time zone); quiet hours respected
 - [ ] Workspace frequency caps reviewed: this Canvas fits under them or has a deliberate exemption
 - [ ] A second person reviews the Canvas and audience before it goes live
 
@@ -43,7 +43,7 @@ Success is a higher first-purchase rate within 7 days of entry than the 10% cont
 
 | Metric | Type |
 |---|---|
-| First purchase within 7 days, journey vs. control, for each Canvas | Primary |
+| First purchase within 14 days, journey vs. control, for each Canvas | Primary |
 | Reward redemption rate (first meal of $50+ paid in the app) | Secondary |
 | First meals under $50 (converted, reward still unused) | Secondary |
 | Days from signup to first purchase | Secondary |
