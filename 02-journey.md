@@ -1,6 +1,6 @@
 # 02 — Audience and Journey
 
-Users enter when they show intent but have never paid and still have credit to spend. The main Canvas triggers on a save; a smaller second Canvas catches new users who keep opening the app without saving. Any purchase ends either one.
+Users enter when they show intent but have never paid and still have their referral reward to use. The main Canvas triggers on a save; a smaller second Canvas catches new users who keep opening the app without saving. Any purchase ends either one.
 
 ---
 
@@ -9,7 +9,7 @@ Users enter when they show intent but have never paid and still have credit to s
 | Rule | Setting |
 |---|---|
 | Entry trigger | Performs `restaurant_saved` |
-| Filters | `wallet_balance` > 0 AND `first_transaction_at` is blank |
+| Filters | `first_reward_amount` > 0 AND `first_transaction_at` is blank |
 | Send settings | Subscribed or opted-in, per channel |
 | Conversion event | Makes Purchase within 7 days |
 | Re-entry | Once every 30 days at most |
@@ -23,10 +23,11 @@ Used to spot-check Braze's audience count before launch.
 ```sql
 SELECT u.user_id
 FROM users u
-JOIN wallets w           ON w.user_id = u.user_id
+JOIN rewards r           ON r.user_id = u.user_id
+                        AND r.reward_type = 'referral_welcome'
+                        AND r.redeemed_at IS NULL
 LEFT JOIN transactions t ON t.user_id = u.user_id
-WHERE w.balance > 0
-  AND t.user_id IS NULL;
+WHERE t.user_id IS NULL;
 ```
 
 This counts everyone who matches the entry filters. The save is the trigger, so it isn't in this count. Braze only counts users its Send Settings can reach on push or email, so its count will be lower; the difference is users with no reachable channel.
@@ -37,10 +38,10 @@ This counts everyone who matches the entry filters. The save is the trigger, so 
 
 ```mermaid
 flowchart TD
-    A(["Entry<br/>saves a restaurant<br/>credit unspent"]) --> B["Control split<br/>10% get nothing"]
+    A(["Entry<br/>saves a restaurant<br/>reward unused"]) --> B["Control split<br/>10% get nothing"]
     B --> C["Delay<br/>until 4:30 PM user's local time"]
     C --> D{"Audience Path<br/>Push Enabled?"}
-    D -->|"yes"| E["Push<br/>Your $25 is waiting at<br/>the restaurant you saved"]
+    D -->|"yes"| E["Push<br/>Your $25 toward a $50+ meal<br/>at the restaurant you saved"]
     D -->|"no"| F["Email<br/>same message"]
     E --> G{"Action Path<br/>first purchase<br/>within 48 hours?"}
     F --> G
@@ -67,6 +68,8 @@ Push carries the first nudge when push is enabled, email when it isn't, and one 
 | Rule-based channel split, not Intelligent Channel | Intelligent Channel needs 3+ messages across 2+ channels, and a new user doesn't have that history yet |
 | One follow-up, then stop | Two touches over about two days is enough for a new user; more risks opt-outs |
 | 10% control | Proves the journey caused the purchases, not the referral itself |
+| State the $50 minimum in the copy | The reward only applies to a food and beverage subtotal of $50 or more, paid in the app; copy that hides the minimum sets up a disappointment at checkout |
+| A first meal under $50 still counts as converted | The goal is a first meal; the reward stays unused on the account and could trigger its own follow-up |
 
 ---
 
@@ -77,7 +80,7 @@ A new user who opens the app three times in their first two weeks but never save
 | Rule | Setting |
 |---|---|
 | Entry trigger | Starts a session |
-| Filters | `wallet_balance` > 0 AND `first_transaction_at` is blank AND total sessions ≥ 3 AND First Used App less than 14 days ago AND `saved_restaurants` is empty |
+| Filters | `first_reward_amount` > 0 AND `first_transaction_at` is blank AND total sessions ≥ 3 AND First Used App less than 14 days ago AND `saved_restaurants` is empty |
 | Send settings | Subscribed or opted-in, per channel |
 | Conversion event | Makes Purchase within 7 days |
 | Re-entry | Once |

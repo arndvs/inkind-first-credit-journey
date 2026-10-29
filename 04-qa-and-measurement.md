@@ -20,9 +20,9 @@ Success is a higher first-purchase rate within 7 days of entry than the 10% cont
 ### What they see
 
 - [ ] Test profile shows each event and attribute with the right type (User Search, event user log)
-- [ ] Liquid preview for seven test users: saved restaurant found in the Catalog (once from the entry event, once from saved_restaurants only), saved ID missing from the Catalog, nothing saved, nothing saved with the recommendations endpoint down, zero balance, no balance attribute (last two abort)
-- [ ] Rendered push has no leading or trailing blank lines, shows "$25" and "$12.50" correctly, and stays under the push length limit with three long restaurant names
-- [ ] Cloud Data Ingestion sync run shows the expected row count, and a test user's `wallet_balance` updates after a change in Snowflake
+- [ ] Liquid preview for seven test users: saved restaurant found in the Catalog (once from the entry event, once from saved_restaurants only), saved ID missing from the Catalog, nothing saved, nothing saved with the recommendations endpoint down, reward already used (no reward fields), reward missing its minimum (last two abort)
+- [ ] Rendered push has no leading or trailing blank lines, shows "$25 toward a $50+ meal" (and "$12.50" for a non-whole amount) correctly, and stays under the push length limit with three long restaurant names
+- [ ] Cloud Data Ingestion sync run shows the expected row count, and a test user's reward fields clear from the profile after the reward is marked redeemed in Snowflake
 - [ ] Links are tracked and deep-link into the app; email renders in Gmail, Outlook, and Apple Mail and includes the footer with an unsubscribe link
 - [ ] A test purchase removes the test user from the Canvas
 - [ ] Browsing Canvas: a test user enters on their third session within 14 days, not before; saving a restaurant moves them out of it
@@ -44,7 +44,8 @@ Success is a higher first-purchase rate within 7 days of entry than the 10% cont
 | Metric | Type |
 |---|---|
 | First purchase within 7 days, journey vs. control, for each Canvas | Primary |
-| Credit redemption rate | Secondary |
+| Reward redemption rate (first meal of $50+ paid in the app) | Secondary |
+| First meals under $50 (converted, reward still unused) | Secondary |
 | Days from signup to first purchase | Secondary |
 | Results by signup-week cohort, journey vs. control | Secondary |
 | Unsubscribes and push opt-outs | Guardrail |
@@ -56,8 +57,8 @@ Success is a higher first-purchase rate within 7 days of entry than the 10% cont
 | Question | Why it matters |
 |---|---|
 | Are browse and save events already reaching Braze, or only transactions? | Decides whether this is a data gap or a journey gap |
-| Is wallet balance on the profile, and how often does it sync? | A stale balance means the wrong message, or a send to someone with nothing to spend |
-| How does the wallet change at payment (credit applied, cash back earned)? | Decides what the purchase event and balance update look like, and whether the message should mention earning, not just spending |
+| How is the referral reward stored, and does it reach the Braze profile today? | The app keeps Rewards separate from inKind Cash and Cash Back, so the journey reads the reward record, not a wallet balance; a stale record means promoting a reward that's already used |
+| Should a first meal under $50 count as converted? | It ends this journey, but the reward is still unused; that may deserve its own follow-up |
 | What share of new users allow push? | Decides how much email has to carry |
 | What is the session-count filter called in the Braze filter picker? | The browsing Canvas (02, section 4) depends on it; the SDK collects total sessions, but I haven't seen the filter's exact name |
 | Does an existing referral or onboarding Canvas overlap with this one? | Avoids double messaging; may mean extending a Canvas instead of adding one |
