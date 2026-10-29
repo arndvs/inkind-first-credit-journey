@@ -4,9 +4,13 @@ Implementation sketch · Aaron Davis · October 2026
 
 How I'd build one Braze journey end to end: get browse intent and the referral reward onto the profile, then send a pre-dinner nudge to referred users who haven't made a first purchase.
 
-**Why this one:** I signed up through a referral in October with a $25 reward toward my first $50+ meal. Over a couple of weekends I browsed the map, looked through different kinds of restaurants, and saved two. Then one Saturday my wife and I were deciding what's for dinner, and inKind didn't come to mind. It wasn't a lack of interest; nothing reminded me. The few emails I got were general brand messages.
+**Why this one:** I signed up through a referral on October 8 with a $25 reward toward my first $50+ meal. That first day I spent time in the app, zooming in and out of San Diego's neighborhoods. Then a few days went by with no messages from inKind. One random day I opened it again, searched a few neighborhoods, and saved a restaurant or two. After that I mostly forgot about it.
 
-The message I expected was simple: you saved these restaurants, your $25 is waiting, here's one near you tonight. Everything it needs was already in my account: the restaurants I saved and the reward I hadn't used. This repo is how I'd get those signals onto the Braze profile and act on them. It's the same idea behind the recency and frequency segments I've built before: message people based on what they've done and what they haven't.
+On Saturday, October 24, my wife and I were deciding on takeout. We'd already spent time on Google Maps looking for places to order, and inKind didn't come to mind. It wasn't a lack of interest. Nothing reminded me it was there.
+
+I'd have used the reward if a message had reached me that Saturday night. One or two messages in the weeks before would have kept inKind top of mind when we started looking.
+
+The message I'd have wanted was simple: you saved these restaurants, your $25 is waiting, here's one near you tonight. Everything it needed was already in my account: the restaurants I saved and the reward I hadn't used. This repo is how I'd get those signals onto the Braze profile, act on them, and time the messages so they arrive before someone is choosing dinner. It's the same idea behind the recency and frequency segments I've built before: message people based on what they've done and what they haven't.
 
 ---
 
