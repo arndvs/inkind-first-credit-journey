@@ -15,7 +15,7 @@ The message I expected was simple: you saved these restaurants, your $25 is wait
 | File | What it contains |
 |---|---|
 | [`01-data-contract.md`](./01-data-contract.md) | The profile fields, two sync paths (real-time `/users/track` for events, Snowflake Cloud Data Ingestion for computed attributes), sample payloads, the sync view, sync rules |
-| [`02-journey.md`](./02-journey.md) | Audience rules, audience SQL, the Canvas flow |
+| [`02-journey.md`](./02-journey.md) | Audience rules, audience SQL, the Canvas flow, and a second Canvas for new users who browse without saving |
 | [`03-message.liquid`](./03-message.liquid) | The template: saved-restaurant personalization from a Catalog, a Connected Content call for nearby picks with its own fallback, and an abort when there's no credit |
 | [`04-qa-and-measurement.md`](./04-qa-and-measurement.md) | Pre-launch send-safety and rendering checks, how I'd ship the backend change, metrics by cohort, what I'd confirm first |
 
@@ -26,4 +26,4 @@ With only a few minutes, start with the "Who can receive it" checks in [`04-qa-a
 ## Conventions
 
 - **Every event, attribute, table, endpoint, and threshold name is illustrative**, to be mapped to inKind's existing schema. I don't have access to inKind's data model, so this is a best guess built from the public Braze docs and my experience as one new user. [`04-qa-and-measurement.md`](./04-qa-and-measurement.md) lists what I'd confirm first.
-- Timings (4:30 PM send, 48-hour wait, 30-day re-entry) are starting points to test, not conclusions.
+- Timings and thresholds (4:30 PM send, 48-hour wait, 30-day re-entry, three sessions in 14 days) are starting points to test, not conclusions.

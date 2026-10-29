@@ -13,13 +13,14 @@ The journey needs browse intent, credit, and purchase state on the Braze profile
 | `first_transaction_at` | Custom attribute (time) | Warehouse → Cloud Data Ingestion | Entry filter (blank = never paid) |
 | `saved_restaurants` | Custom attribute (array of restaurant IDs) | Rails backend → `/users/track` | Message personalization |
 | `restaurants` | Catalog (`id`, `name`, `deep_link`, `neighborhood`) | Rails backend → Catalogs API | Restaurant names and links in the message |
-| `restaurant_saved` | Custom event (`restaurant_id`, `cuisine`) | App SDK or Rails backend → `/users/track` | Entry trigger |
+| `restaurant_saved` | Custom event (`restaurant_id`, `cuisine`) | App SDK or Rails backend → `/users/track` | Entry trigger; exits the browsing Canvas |
 | `restaurant_viewed` | Custom event (`restaurant_id`) | App SDK or Rails backend → `/users/track` | Intent signal |
 | `search_performed` | Custom event (`area`) | App SDK or Rails backend → `/users/track` | Intent signal |
 | Purchase | Purchase event | Rails backend → `/users/track` | Exit criteria, conversion |
 | Push / email subscription state | Standard | SDK, preferences | Channel routing |
+| Total sessions, First Used App | Collected by the Braze SDK | SDK | Entry filters for the browsing Canvas (02, section 4) |
 
-`saved_restaurants` stores IDs because they stay stable when a restaurant changes its name; the message looks up the current name and deep link from the `restaurants` Catalog.
+`saved_restaurants` stores IDs because they stay stable when a restaurant changes its name; the message looks up the current name and deep link from the `restaurants` Catalog. The `restaurant_saved` event's `restaurant_id` reaches the message as Canvas context (`context.${restaurant_id}`), so the message names the restaurant that triggered entry and uses `saved_restaurants` as the fallback.
 
 Any other per-user value the messaging needs, such as an offer amount or threshold, follows the same path as `wallet_balance`: computed where the data lives, synced to the profile, read in Liquid.
 

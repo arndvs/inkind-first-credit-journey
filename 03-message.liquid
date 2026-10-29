@@ -1,24 +1,27 @@
 {%- comment -%}
-  First-credit nudge: push body and email headline.
+  First-credit nudge: push body and email headline. Used by both Canvases in 02.
 
   Cases:
     1. Credit left + a saved restaurant found in the Catalog -> name the restaurant
-    2. Credit left + saved ID missing from the Catalog, or
-       nothing saved                    -> Connected Content call for three nearby picks
+    2. Credit left + restaurant ID missing from the Catalog, or
+       no restaurant ID at all          -> Connected Content call for three nearby picks
     3. Case 2 + the call fails          -> generic copy, still sends
     4. No credit, or balance missing    -> abort the send
 
   Notes:
   - {%- -%} whitespace control keeps tag lines from adding blank lines to the push.
   - The balance is checked for presence before it's compared, because comparing a
-    missing value to 0 is an error in Liquid; abort_message stops rendering at once.
+    missing value to 0 can error in Liquid; abort_message stops rendering at once.
   - wallet_balance_display is a preformatted string ("25", "12.50") synced from the
     warehouse; the raw balance is the fallback if it's missing.
-  - saved_restaurants holds restaurant IDs. The restaurants Catalog supplies the
-    current name; an unknown ID returns an empty items array, so the size is checked
-    before the name is used.
-  - The Connected Content call only runs in case 2, so most sends make no external
-    request. The endpoint is a placeholder for a recommendations service.
+  - The restaurant comes from the restaurant_saved event that started the Canvas
+    (Canvas context), so the message names the place the user just saved.
+    The first ID in saved_restaurants is the fallback.
+  - The restaurants Catalog supplies the current name; an unknown ID returns an
+    empty items array, so the size is checked before the name is used.
+  - The Connected Content call only runs in case 2: every send from the browsing
+    Canvas, and only fallback sends from the save Canvas. The endpoint is a
+    placeholder for a recommendations service.
   - This copy is shared by push and email. In the HTML email version, add | escape
     to restaurant names and link the saved restaurant with items[0].deep_link;
     push text doesn't need either.
@@ -28,6 +31,7 @@
 {%- assign balance = custom_attribute.${wallet_balance} -%}
 {%- assign balance_display = custom_attribute.${wallet_balance_display} | default: balance -%}
 {%- assign first_saved = custom_attribute.${saved_restaurants} | first -%}
+{%- assign saved_id = context.${restaurant_id} | default: first_saved -%}
 
 {%- unless balance -%}
   {%- abort_message("no balance attribute") -%}
@@ -36,8 +40,8 @@
   {%- abort_message("no unspent credit") -%}
 {%- endif -%}
 
-{%- if first_saved -%}
-  {% catalog_items restaurants {{ first_saved }} %}
+{%- if saved_id -%}
+  {% catalog_items restaurants {{ saved_id }} %}
   {%- if items.size > 0 -%}
     {%- assign saved_name = items[0].name -%}
   {%- endif -%}
