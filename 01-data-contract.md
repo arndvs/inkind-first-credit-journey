@@ -95,13 +95,14 @@ On a purchase:
       "product_id": "dine_in",
       "currency": "USD",
       "price": 62.40,
-      "time": "2026-10-25T19:41:00Z"
+      "time": "2026-10-25T19:41:00Z",
+      "properties": { "reward_applied": true, "reward_amount": 25 }
     }
   ]
 }
 ```
 
-If the first meal uses the reward, the backend marks it redeemed and the next warehouse sync clears the reward fields. The purchase exit doesn't wait for that sync.
+The reward's state isn't in this payload. The warehouse owns the reward fields, so the backend marks the reward redeemed in its own database and the next warehouse sync clears them. The purchase only records whether this meal used the reward, which lets Braze report redemptions without waiting for the sync. The purchase exit doesn't wait for that sync either.
 
 ---
 

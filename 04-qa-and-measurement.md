@@ -44,7 +44,7 @@ Success is a higher first-purchase rate within 14 days of entry than the 10% con
 | Metric | Type |
 |---|---|
 | First purchase within 14 days, journey vs. control, for each Canvas | Primary |
-| Reward redemption rate (first meal of $50+ paid in the app) | Secondary |
+| Reward redemption rate (purchases with `reward_applied`) | Secondary |
 | First meals under $50 (converted, reward still unused) | Secondary |
 | Days from signup to first purchase | Secondary |
 | Results by signup-week cohort, journey vs. control | Secondary |
