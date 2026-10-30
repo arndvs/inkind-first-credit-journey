@@ -113,9 +113,9 @@ Braze reads a table or view with `EXTERNAL_ID`, `UPDATED_AT` (UTC), and a `PAYLO
 ```sql
 CREATE OR REPLACE VIEW braze_first_reward_attributes AS
 SELECT
-  r.user_id                         AS EXTERNAL_ID,
-  GREATEST(r.updated_at, COALESCE(t.first_at, r.updated_at)) AS UPDATED_AT,
-  OBJECT_CONSTRUCT_KEEP_NULL(
+  r.user_id                         AS EXTERNAL_ID,              -- must match the backend's external_id
+  GREATEST(r.updated_at, COALESCE(t.first_at, r.updated_at)) AS UPDATED_AT,  -- COALESCE stops a NULL from blanking it
+  OBJECT_CONSTRUCT_KEEP_NULL(                                    -- keeps nulls so a used reward clears in Braze
     'first_reward_amount',    IFF(r.redeemed_at IS NULL, r.amount, NULL),
     'first_reward_display',   IFF(r.redeemed_at IS NULL,
                                   IFF(r.amount = FLOOR(r.amount),
@@ -123,13 +123,13 @@ SELECT
                                       TRIM(TO_VARCHAR(r.amount, '9999990.00'))),
                                   NULL),
     'first_reward_min_spend', IFF(r.redeemed_at IS NULL, r.min_spend::INT, NULL),
-    'first_transaction_at',   t.first_at
+    'first_transaction_at',   t.first_at                         -- NULL = never paid
   )                                 AS PAYLOAD
 FROM rewards r
-LEFT JOIN (
+LEFT JOIN (                                                      -- LEFT JOIN keeps users with no purchases
   SELECT user_id, MIN(created_at) AS first_at
   FROM transactions
-  GROUP BY user_id
+  GROUP BY user_id                                               -- one row per user, so the join can't duplicate users
 ) t
   ON t.user_id = r.user_id
 WHERE r.reward_type = 'referral_welcome';
@@ -137,7 +137,7 @@ WHERE r.reward_type = 'referral_welcome';
 
 `OBJECT_CONSTRUCT_KEEP_NULL` sends nulls on purpose. When a reward is redeemed, its three fields go to null and Braze removes them from the profile; plain `OBJECT_CONSTRUCT` would drop those keys, and the profile would keep showing $25 after it was spent. A user with no transactions gets a null `first_transaction_at`, which the entry filter reads as blank. `first_reward_display` drops the decimals for whole-dollar amounts ("25") and keeps two otherwise ("12.50"), so the message never shows "$25.0". The view assumes one welcome reward per user and that redeeming it updates `rewards.updated_at`.
 
-In production, `UPDATED_AT` should come from when the row was loaded or changed, not when the transaction happened, so late-arriving data still syncs. The view above derives it from event times for readability.
+In production, `UPDATED_AT` should come from when the row was loaded or changed, not when the transaction happened, so late-arriving data still syncs. The view above derives it from event times for readability. At production scale I'd also make it a dynamic table or an incremental model, so each sync doesn't rescan every transaction; the view keeps the logic readable here.
 
 ---
 

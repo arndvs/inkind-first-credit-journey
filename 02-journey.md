@@ -27,7 +27,7 @@ JOIN rewards r           ON r.user_id = u.user_id
                         AND r.reward_type = 'referral_welcome'
                         AND r.redeemed_at IS NULL
 LEFT JOIN transactions t ON t.user_id = u.user_id
-WHERE t.user_id IS NULL;
+WHERE t.user_id IS NULL;                           -- no purchase found = never paid
 ```
 
 This counts everyone who matches the entry filters. The save is the trigger, so it isn't in this count. Braze only counts users its Send Settings can reach on push or email, so its count will be lower; the difference is users with no reachable channel.
