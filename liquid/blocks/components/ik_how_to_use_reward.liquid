@@ -1,0 +1,15 @@
+{%- comment -%}
+  ik_how_to_use_reward: how to redeem, from the app's reward terms, with the minimum in a callout.
+  Inputs: min_spend.
+  Outputs: none. Sets callout_text and callout_style along the way.
+{%- endcomment -%}
+<table class="row-content" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" width="{{ ik_width }}" style="background-color:{{ ik_color_light }};width:{{ ik_width }}px;margin:0 auto"><tbody>
+<tr><td class="pad-x" style="padding:{{ ik_space_lg }}px {{ ik_space_lg }}px {{ ik_space_sm }}px;font-family:{{ ik_font }};text-align:center;color:{{ ik_color_ink }}">
+  <p style="margin:0 0 {{ ik_space_sm }}px;font-size:{{ ik_text_xl }}px;font-weight:800">How to use it</p>
+  <p style="margin:0;font-size:{{ ik_text_md }}px;line-height:1.6">Dine at any {{ ik_brand_name }} restaurant and pay the bill in the app.</p>
+</td></tr>
+<tr><td class="pad-x" style="padding:0 {{ ik_space_lg }}px {{ ik_space_xl }}px">
+  {%- capture callout_text -%}Your reward applies when the food and beverage subtotal is <strong>${{ min_spend }} or more</strong>. Pick it at checkout.{%- endcapture -%}
+  {%- assign callout_style = 'note' -%}
+  {{content_blocks.${ik_callout}}}
+</td></tr></tbody></table>

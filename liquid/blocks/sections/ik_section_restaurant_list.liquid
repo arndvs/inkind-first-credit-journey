@@ -1,0 +1,18 @@
+{%- comment -%}
+  ik_section_restaurant_list: a titled list of restaurants on a light band.
+  Inputs: list_title, list_items (array of restaurants), optional list_limit (default 3),
+  optional list_style ('card', the default: full-width photo cards; or 'row': image-left rows).
+  Outputs: none. Sets card for each item.
+  Notes: variables are global, so set list_style every time you include this block.
+{%- endcomment -%}
+<table class="row-content" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" width="{{ ik_width }}" style="background-color:{{ ik_color_light }};width:{{ ik_width }}px;margin:0 auto"><tbody>
+<tr><td class="pad-x" style="padding:{{ ik_space_lg }}px {{ ik_space_lg }}px {{ ik_space_xs }}px;font-family:{{ ik_font }};text-align:center">
+  <p style="margin:0;color:{{ ik_color_ink }};font-size:{{ ik_text_xl }}px;font-weight:800">{{ list_title | escape }}</p>
+</td></tr>
+{%- assign list_limit = list_limit | default: 3 -%}
+{%- for card in list_items limit: list_limit %}
+<tr><td class="pad-x" style="padding:{{ ik_space_xs }}px {{ ik_space_lg }}px">
+  {%- if list_style == 'row' -%}{{content_blocks.${ik_card_restaurant_row}}}{%- else -%}{{content_blocks.${ik_card_restaurant_compact}}}{%- endif -%}
+</td></tr>
+{%- endfor %}
+</tbody></table>

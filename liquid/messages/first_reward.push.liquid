@@ -1,0 +1,23 @@
+{%- comment -%}
+  First-reward push, from the same logic blocks as the email.
+  Its output must match 03-message.liquid exactly; tests/test_parity.py checks every case.
+{%- endcomment -%}
+{{content_blocks.${ik_get_reward}}}
+{%- unless reward_ok -%}
+  {%- case reward_skip_reason -%}
+    {%- when 'zero_amount' -%}{%- abort_message("reward amount is zero") -%}
+    {%- when 'no_minimum' -%}{%- abort_message("reward minimum missing") -%}
+    {%- else -%}{%- abort_message("no unused reward") -%}
+  {%- endcase -%}
+{%- endunless -%}
+{{content_blocks.${ik_get_saved_restaurant}}}
+{%- if saved_name -%}
+Your {{ offer }} is waiting at {{ saved_name }}. Dinner tonight?
+{%- else -%}
+  {{content_blocks.${ik_get_nearby}}}
+  {%- if nearby -%}
+Your {{ offer }} is waiting. Nearby: {{ nearby | map: 'name' | join: ', ' | truncate: 80 }}
+  {%- else -%}
+Your {{ offer }} is waiting. Find a spot near you tonight.
+  {%- endif -%}
+{%- endif -%}

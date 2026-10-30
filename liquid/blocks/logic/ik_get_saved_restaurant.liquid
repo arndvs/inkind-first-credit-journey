@@ -1,0 +1,15 @@
+{%- comment -%}
+  ik_get_saved_restaurant: the restaurant to feature.
+  Inputs: context.${restaurant_id} (the restaurant_saved event that started the Canvas),
+  then saved_restaurants (profile attribute), and the restaurants Catalog.
+  Outputs: saved (Catalog item) and saved_name, or neither when nothing is found.
+{%- endcomment -%}
+{%- assign first_saved = custom_attribute.${saved_restaurants} | first -%}
+{%- assign saved_id = context.${restaurant_id} | default: first_saved -%}
+{%- if saved_id -%}
+  {% catalog_items restaurants {{ saved_id }} %}
+  {%- if items.size > 0 -%}
+    {%- assign saved = items[0] -%}
+    {%- assign saved_name = saved.name -%}
+  {%- endif -%}
+{%- endif -%}

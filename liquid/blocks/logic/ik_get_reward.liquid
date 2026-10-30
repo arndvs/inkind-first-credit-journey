@@ -1,0 +1,25 @@
+{%- comment -%}
+  ik_get_reward: reads the referral reward and decides whether it can be promoted.
+  Inputs: first_reward_amount, first_reward_display, first_reward_min_spend (profile attributes).
+  Outputs: reward, reward_display, min_spend, offer ("$25 toward a $50+ meal"),
+  reward_ok (true or false), reward_skip_reason (no_reward, zero_amount, no_minimum).
+  Notes: never aborts. Each message checks reward_ok and calls abort_message itself, so the
+  stop is visible in the message and doesn't depend on how Braze handles an abort inside a
+  Content Block. The zero check sits inside the presence check: comparing a missing value to 0 can error.
+{%- endcomment -%}
+{%- assign reward = custom_attribute.${first_reward_amount} -%}
+{%- assign reward_display = custom_attribute.${first_reward_display} | default: reward -%}
+{%- assign min_spend = custom_attribute.${first_reward_min_spend} -%}
+{%- assign reward_ok = false -%}
+{%- if reward -%}
+  {%- if reward <= 0 -%}
+    {%- assign reward_skip_reason = 'zero_amount' -%}
+  {%- elsif min_spend -%}
+    {%- assign reward_ok = true -%}
+  {%- else -%}
+    {%- assign reward_skip_reason = 'no_minimum' -%}
+  {%- endif -%}
+{%- else -%}
+  {%- assign reward_skip_reason = 'no_reward' -%}
+{%- endif -%}
+{%- capture offer -%}${{ reward_display }} toward a ${{ min_spend }}+ meal{%- endcapture -%}

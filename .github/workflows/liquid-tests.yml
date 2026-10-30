@@ -1,0 +1,18 @@
+name: Liquid tests
+
+on:
+  push:
+    paths: ["liquid/**", "03-message.liquid", ".github/workflows/liquid-tests.yml"]
+  pull_request:
+    paths: ["liquid/**", "03-message.liquid", ".github/workflows/liquid-tests.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r liquid/requirements.txt
+      - run: python -m pytest liquid/tests -v

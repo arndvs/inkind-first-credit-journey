@@ -1,0 +1,10 @@
+{%- comment -%}
+  ik_restaurant_link: the link for one restaurant.
+  Inputs: card (reads card.location_id).
+  Outputs: card_link, built from restaurant_base_url and the location ID; explore_url if there's none.
+{%- endcomment -%}
+{%- if card.location_id -%}
+  {%- assign card_link = restaurant_base_url | append: card.location_id -%}
+{%- else -%}
+  {%- assign card_link = explore_url -%}
+{%- endif -%}

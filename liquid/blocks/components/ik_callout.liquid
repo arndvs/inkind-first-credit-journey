@@ -1,0 +1,15 @@
+{%- comment -%}
+  ik_callout: a bordered note for terms the reader must not miss.
+  Inputs: callout_text (HTML allowed, so escape any user data before passing it),
+  optional callout_style ('note', the default: white with a gold edge; or 'dark').
+  Outputs: none.
+  Notes: variables are global, so set callout_style every time you include this block.
+{%- endcomment -%}
+{%- if callout_style == 'dark' -%}
+  {%- assign callout_bg = ik_color_card_dark -%}{%- assign callout_fg = ik_color_light -%}
+{%- else -%}
+  {%- assign callout_bg = ik_color_white -%}{%- assign callout_fg = ik_color_ink -%}
+{%- endif -%}
+<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:{{ callout_bg }};border:1px solid {{ ik_color_border }};border-left:4px solid {{ ik_color_gold }};border-radius:8px"><tbody>
+<tr><td style="padding:{{ ik_space_sm }}px {{ ik_space_md }}px;font-family:{{ ik_font }};font-size:{{ ik_text_sm }}px;line-height:1.5;color:{{ callout_fg }};text-align:left">{{ callout_text }}</td></tr>
+</tbody></table>

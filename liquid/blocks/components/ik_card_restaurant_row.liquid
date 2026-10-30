@@ -1,0 +1,26 @@
+{%- comment -%}
+  ik_card_restaurant_row: compact row with the photo on the left, for short lists.
+  Inputs: card (name, cuisine, price, address, distance_mi, cashback_pct, location_id,
+  thumb_url (a square photo) or image_url).
+  Outputs: none. Sets card_link and badge_bg along the way.
+  Notes: about a third the height of ik_card_restaurant_compact. A square thumb_url fills a
+  fixed square; with only image_url, the photo keeps its shape (many clients ignore
+  object-fit, so a fixed height would stretch it). Without a photo, the text takes the full width.
+{%- endcomment -%}
+{{content_blocks.${ik_restaurant_link}}}
+<table class="ik-row" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:{{ ik_color_white }};border:1px solid {{ ik_color_border }};border-radius:16px;overflow:hidden"><tbody><tr>
+{%- if card.thumb_url %}
+<td width="{{ ik_thumb }}" valign="top" style="width:{{ ik_thumb }}px"><a href="{{ card_link }}" target="_blank"><img src="{{ card.thumb_url }}" alt="{{ card.name | escape }}" width="{{ ik_thumb }}" height="{{ ik_thumb }}" style="display:block;width:{{ ik_thumb }}px;height:{{ ik_thumb }}px;border:0"></a></td>
+{%- elsif card.image_url %}
+<td width="{{ ik_thumb }}" valign="middle" style="width:{{ ik_thumb }}px"><a href="{{ card_link }}" target="_blank"><img src="{{ card.image_url }}" alt="{{ card.name | escape }}" width="{{ ik_thumb }}" style="display:block;width:{{ ik_thumb }}px;height:auto;border:0"></a></td>
+{%- endif %}
+<td valign="middle" style="padding:{{ ik_space_sm }}px;font-family:{{ ik_font }};text-align:left">
+  <a href="{{ card_link }}" target="_blank" style="text-decoration:none;color:{{ ik_color_ink }};font-size:{{ ik_text_md }}px;font-weight:800">{{ card.name | escape }}</a>
+  <p style="margin:{{ ik_space_xxs }}px 0 0;color:{{ ik_color_muted }};font-size:{{ ik_text_sm }}px">{{ card.cuisine | escape }}{% if card.price %} · {{ card.price }}{% endif %}</p>
+  {%- if card.address %}
+  <p style="margin:{{ ik_space_xxs }}px 0 0;color:{{ ik_color_muted }};font-size:{{ ik_text_sm }}px">{{ card.address | escape }}{% if card.distance_mi %} · {{ card.distance_mi }} mi{% endif %}</p>
+  {%- endif %}
+  {%- if card.cashback_pct %}
+  <p style="margin:{{ ik_space_xs }}px 0 0">{% assign badge_bg = ik_color_dark %}{{content_blocks.${ik_badge_cashback}}}</p>
+  {%- endif %}
+</td></tr></tbody></table>

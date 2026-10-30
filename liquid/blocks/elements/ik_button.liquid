@@ -1,0 +1,13 @@
+{%- comment -%}
+  ik_button: the pill button, with the VML version Outlook needs.
+  Inputs: btn_label, btn_url, optional btn_style ('primary', the default: gold; or 'dark').
+  Outputs: none.
+  Notes: variables are global, so set btn_style every time you include this block.
+{%- endcomment -%}
+{%- if btn_style == 'dark' -%}
+  {%- assign btn_bg = ik_color_dark -%}{%- assign btn_fg = ik_color_light -%}
+{%- else -%}
+  {%- assign btn_bg = ik_color_gold -%}{%- assign btn_fg = ik_color_on_gold -%}
+{%- endif -%}
+<a href="{{ btn_url }}" target="_blank" style="color:{{ btn_fg }};text-decoration:none"><!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{ btn_url }}" style="height:41px;width:{{ ik_button_width }}px;v-text-anchor:middle" arcsize="80%" fillcolor="{{ btn_bg }}"><v:stroke color="{{ btn_bg }}"/><center style="color:{{ btn_fg }};font-family:sans-serif;font-size:{{ ik_text_md }}px;font-weight:bold">{{ btn_label | escape }}</center></v:roundrect><![endif]--><!--[if !mso]><!--><span class="button" style="background-color:{{ btn_bg }};border:1px solid {{ btn_bg }};border-radius:35px;color:{{ btn_fg }};display:inline-block;font-family:{{ ik_font }};font-size:{{ ik_text_md }}px;padding:{{ ik_space_xxs }}px {{ ik_space_sm }}px;text-align:center;width:{{ ik_button_width }}px;max-width:100%"><span style="line-height:32px"><strong>{{ btn_label | escape }}</strong></span></span><!--<![endif]--></a>

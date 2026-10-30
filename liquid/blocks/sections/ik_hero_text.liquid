@@ -1,0 +1,17 @@
+{%- comment -%}
+  ik_hero_text: dark hero band with an optional featured restaurant and a button.
+  Inputs: hero_eyebrow, hero_headline (may contain <br>), hero_body, optional hero_card
+  (a restaurant shown with ik_card_restaurant_feature), btn_label, btn_url, optional btn_style.
+  Outputs: none. Sets card when hero_card is given.
+{%- endcomment -%}
+<table class="row-content" align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" width="{{ ik_width }}" style="background-color:{{ ik_color_dark }};width:{{ ik_width }}px;margin:0 auto"><tbody>
+<tr><td class="pad-x" style="padding:{{ ik_space_xl }}px {{ ik_space_lg }}px {{ ik_space_lg }}px;text-align:center;font-family:{{ ik_font }}">
+  <p style="margin:0 0 {{ ik_space_sm }}px;color:{{ ik_color_gold }};font-size:{{ ik_text_xs }}px;font-weight:600;letter-spacing:2px;text-transform:uppercase">{{ hero_eyebrow | escape }}</p>
+  <p style="margin:0;color:{{ ik_color_light }};font-size:{{ ik_text_display }}px;line-height:1.15;font-weight:800">{{ hero_headline }}</p>
+  <p style="margin:{{ ik_space_sm }}px 0 0;color:{{ ik_color_light }};font-size:{{ ik_text_md }}px;line-height:1.5">{{ hero_body | escape }}</p>
+</td></tr>
+{%- if hero_card %}
+<tr><td class="pad-x" style="padding:0 {{ ik_space_lg }}px {{ ik_space_md }}px">{% assign card = hero_card %}{{content_blocks.${ik_card_restaurant_feature}}}</td></tr>
+{%- endif %}
+<tr><td style="padding:0 {{ ik_space_md }}px {{ ik_space_xl }}px;text-align:center">{{content_blocks.${ik_button}}}</td></tr>
+</tbody></table>

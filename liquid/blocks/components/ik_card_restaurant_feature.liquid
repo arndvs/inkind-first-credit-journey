@@ -1,0 +1,20 @@
+{%- comment -%}
+  ik_card_restaurant_feature: large dark card for one restaurant, for dark sections.
+  Inputs: card (name, cuisine, rating, price, cashback_pct, description, image_url, location_id).
+  Outputs: none. Sets card_link and badge_bg along the way.
+{%- endcomment -%}
+{{content_blocks.${ik_restaurant_link}}}
+<table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background-color:{{ ik_color_card_dark }};border-radius:18px;overflow:hidden"><tbody>
+{%- if card.image_url %}
+<tr><td><a href="{{ card_link }}" target="_blank"><img src="{{ card.image_url }}" alt="{{ card.name | escape }}" width="{{ ik_content_width }}" style="display:block;width:100%;height:auto;border:0"></a></td></tr>
+{%- endif %}
+<tr><td style="padding:{{ ik_space_md }}px;font-family:{{ ik_font }};text-align:left">
+  <p style="margin:0;color:{{ ik_color_light }};font-size:{{ ik_text_xl }}px;font-weight:800">{{ card.name | escape }}</p>
+  <p style="margin:{{ ik_space_xs }}px 0 0;color:{{ ik_color_muted_dark }};font-size:{{ ik_text_sm }}px">{{ card.cuisine | escape }}{% if card.rating %} · ★ {{ card.rating }}{% endif %}{% if card.price %} · {{ card.price }}{% endif %}</p>
+  {%- if card.cashback_pct %}
+  <p style="margin:{{ ik_space_sm }}px 0 0">{% assign badge_bg = ik_color_chip_dark %}{{content_blocks.${ik_badge_cashback}}}</p>
+  {%- endif %}
+  {%- if card.description %}
+  <p style="margin:{{ ik_space_sm }}px 0 0;color:{{ ik_color_body_dark }};font-size:{{ ik_text_md }}px;line-height:1.5">{{ card.description | escape }}</p>
+  {%- endif %}
+</td></tr></tbody></table>

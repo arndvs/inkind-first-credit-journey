@@ -1,0 +1,53 @@
+{%- comment -%}
+  ik_brand: design tokens. Every visible block reads its colors, sizes, and spacing here.
+  Inputs: none.
+  Outputs: ik_brand_name, ik_company_name, ik_company_address, ik_logo_url, ik_icon_*_url,
+  ik_color_*, ik_font, ik_text_*, ik_space_*, ik_width, ik_content_width, ik_button_width, ik_thumb.
+  Notes: colors, font, logo, and icons match inKind's emails; swapping this block restyles
+  every message. Image paths point at liquid/images/ so previews render offline; in Braze,
+  each becomes the image's media library URL. The legal name and address are placeholders.
+  The footer's preference center name is set in ik_footer, because Braze needs it written
+  literally in the tag.
+{%- endcomment -%}
+{%- assign ik_brand_name = 'inKind' -%}
+{%- assign ik_company_name = '[Company legal name]' -%}
+{%- assign ik_company_address = '[Mailing address]' -%}
+{%- assign ik_logo_url = '../images/logo.png' -%}
+{%- assign ik_icon_website_url = '../images/icon-website.png' -%}
+{%- assign ik_icon_tiktok_url = '../images/icon-tiktok.png' -%}
+{%- assign ik_icon_facebook_url = '../images/icon-facebook.png' -%}
+{%- assign ik_icon_instagram_url = '../images/icon-instagram.png' -%}
+{%- comment -%} Colors {%- endcomment -%}
+{%- assign ik_color_dark = '#1b151e' -%}
+{%- assign ik_color_light = '#faf7f7' -%}
+{%- assign ik_color_white = '#ffffff' -%}
+{%- assign ik_color_black = '#0d0d0d' -%}
+{%- assign ik_color_card_dark = '#252027' -%}
+{%- assign ik_color_chip_dark = '#3a3339' -%}
+{%- assign ik_color_gold = '#E7B84B' -%}
+{%- assign ik_color_on_gold = '#000000' -%}
+{%- assign ik_color_ink = '#000000' -%}
+{%- assign ik_color_muted = '#6b6266' -%}
+{%- assign ik_color_muted_dark = '#b9b0b5' -%}
+{%- assign ik_color_body_dark = '#d9d2d6' -%}
+{%- assign ik_color_border = '#ece6e6' -%}
+{%- comment -%} Type scale, in px {%- endcomment -%}
+{%- assign ik_font = "'Rethink Sans',Arial,sans-serif" -%}
+{%- assign ik_text_xs = 12 -%}
+{%- assign ik_text_sm = 14 -%}
+{%- assign ik_text_md = 16 -%}
+{%- assign ik_text_lg = 19 -%}
+{%- assign ik_text_xl = 24 -%}
+{%- assign ik_text_display = 34 -%}
+{%- comment -%} Spacing scale, in px {%- endcomment -%}
+{%- assign ik_space_xxs = 4 -%}
+{%- assign ik_space_xs = 8 -%}
+{%- assign ik_space_sm = 16 -%}
+{%- assign ik_space_md = 24 -%}
+{%- assign ik_space_lg = 32 -%}
+{%- assign ik_space_xl = 48 -%}
+{%- comment -%} Widths, in px. Content sits inside sections' ik_space_lg side padding. {%- endcomment -%}
+{%- assign ik_width = 600 -%}
+{%- assign ik_content_width = ik_width | minus: ik_space_lg | minus: ik_space_lg -%}
+{%- assign ik_button_width = ik_content_width | minus: ik_space_xl -%}
+{%- assign ik_thumb = 120 -%}

@@ -1,0 +1,43 @@
+{%- comment -%}
+  First-reward email, assembled from Content Blocks.
+  Subject (set in the Braze composer): Your {{ offer }} is waiting
+  Cases: saved restaurant -> feature card; nothing saved -> nearby list as image-left rows;
+  nearby call fails -> explore button; no usable reward -> abort before any lookup.
+{%- endcomment -%}
+{{content_blocks.${ik_brand}}}{{content_blocks.${ik_urls}}}{{content_blocks.${ik_get_reward}}}
+{%- unless reward_ok -%}
+  {%- case reward_skip_reason -%}
+    {%- when 'zero_amount' -%}{%- abort_message("reward amount is zero") -%}
+    {%- when 'no_minimum' -%}{%- abort_message("reward minimum missing") -%}
+    {%- else -%}{%- abort_message("no unused reward") -%}
+  {%- endcase -%}
+{%- endunless -%}
+{{content_blocks.${ik_get_saved_restaurant}}}
+{%- unless saved -%}{{content_blocks.${ik_get_nearby}}}{%- endunless -%}
+{%- capture page_title -%}Your {{ offer }} is waiting{%- endcapture -%}
+{%- capture preheader -%}Your {{ offer }} is waiting{% if saved_name %} at {{ saved_name }}{% endif %}.{%- endcapture -%}
+{%- assign hero_eyebrow = 'Your reward is waiting' -%}
+{%- capture hero_headline -%}${{ reward_display }} toward your<br>first ${{ min_spend }}+ meal{%- endcapture -%}
+{%- if saved -%}
+  {%- assign hero_body = "It's waiting at a place you saved. Dinner tonight?" -%}
+  {%- assign hero_card = saved -%}
+  {%- assign card = saved -%}{{content_blocks.${ik_restaurant_link}}}
+  {%- assign btn_url = card_link -%}
+  {%- assign btn_label = 'See ' | append: saved_name -%}
+{%- else -%}
+  {%- assign hero_body = 'Use it at any restaurant on ' | append: ik_brand_name | append: '. Dinner tonight?' -%}
+  {%- assign btn_url = explore_url -%}
+  {%- assign btn_label = 'Find a spot near you' -%}
+{%- endif -%}
+{%- assign btn_style = 'primary' -%}
+{{content_blocks.${ik_layout_open}}}
+{{content_blocks.${ik_hero_text}}}
+{%- if nearby -%}
+  {%- assign list_title = 'Near you' -%}
+  {%- assign list_items = nearby -%}
+  {%- assign list_style = 'row' -%}
+{{content_blocks.${ik_section_restaurant_list}}}
+{%- endif %}
+{{content_blocks.${ik_how_to_use_reward}}}
+{{content_blocks.${ik_footer}}}
+{{content_blocks.${ik_layout_close}}}

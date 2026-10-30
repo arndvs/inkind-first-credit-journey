@@ -1,0 +1,1 @@
+ABORT: reward amount is zero
