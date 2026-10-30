@@ -20,8 +20,8 @@ Success is a higher first-purchase rate within 14 days of entry than the 10% con
 ### What they see
 
 - [ ] Test profile shows each event and attribute with the right type (User Search, event user log)
-- [ ] Liquid preview for seven test users: saved restaurant found in the Catalog (once from the entry event, once from saved_restaurants only), saved ID missing from the Catalog, nothing saved, nothing saved with the recommendations endpoint down, reward already used (no reward fields), reward missing its minimum (last two abort)
-- [ ] Rendered push has no leading or trailing blank lines, shows "$25 toward a $50+ meal" (and "$12.50" for a non-whole amount) correctly, and stays under the push length limit with three long restaurant names
+- [ ] Liquid preview for seven test users: saved restaurant found in the Catalog (once from the entry event, once from saved_restaurants only), saved ID missing from the Catalog, nothing saved, nothing saved with the recommendations endpoint down, reward already used (no reward fields), reward missing its minimum (last two abort). Automated in [`liquid/tests`](./liquid/tests); still previewed in Braze before launch
+- [ ] Rendered push has no leading or trailing blank lines, shows "$25 toward a $50+ meal" (and "$12.50" for a non-whole amount) correctly, and stays under the push length limit with three long restaurant names (also automated)
 - [ ] Cloud Data Ingestion sync run shows the expected row count, and a test user's reward fields clear from the profile after the reward is marked redeemed in Snowflake
 - [ ] Links are tracked and deep-link into the app; email renders in Gmail, Outlook, and Apple Mail and includes the footer with an unsubscribe link
 - [ ] A test purchase removes the test user from the Canvas
@@ -62,3 +62,4 @@ Success is a higher first-purchase rate within 14 days of entry than the 10% con
 | What share of new users allow push? | Decides how much email has to carry |
 | What is the session-count filter called in the Braze filter picker? | The browsing Canvas (02, section 4) depends on it; the SDK collects total sessions, but I haven't seen the filter's exact name |
 | Does an existing referral or onboarding Canvas overlap with this one? | Avoids double messaging; may mean extending a Canvas instead of adding one |
+| Does a "reward applied" receipt come from Rails or Braze? | The journey sends nothing after redemption; whether a receipt confirms the reward depends on which system sends it |

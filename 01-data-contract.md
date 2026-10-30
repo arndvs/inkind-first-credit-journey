@@ -13,7 +13,7 @@ The journey needs browse intent, the referral reward, and purchase state on the 
 | `first_reward_min_spend` | Custom attribute (number, e.g. 50) | Warehouse → Cloud Data Ingestion | Message copy: the minimum the reward needs |
 | `first_transaction_at` | Custom attribute (time) | Warehouse → Cloud Data Ingestion | Entry filter (blank = never paid) |
 | `saved_restaurants` | Custom attribute (array of restaurant IDs) | Rails backend → `/users/track` | Message personalization |
-| `restaurants` | Catalog (`id`, `name`, `deep_link`, `neighborhood`) | Rails backend → Catalogs API | Restaurant names and links in the message |
+| `restaurants` | Catalog (`id`, `name`, `location_id`, `cuisine`, `price`, `rating`, `cashback_pct`, `image_url`, `thumb_url`, `description`) | Rails backend → Catalogs API | Restaurant names, links, and cards in the message |
 | `restaurant_saved` | Custom event (`restaurant_id`, `cuisine`) | App SDK or Rails backend → `/users/track` | Entry trigger; exits the browsing Canvas |
 | `restaurant_viewed` | Custom event (`restaurant_id`) | App SDK or Rails backend → `/users/track` | Intent signal |
 | `search_performed` | Custom event (`area`) | App SDK or Rails backend → `/users/track` | Intent signal |
@@ -21,7 +21,7 @@ The journey needs browse intent, the referral reward, and purchase state on the 
 | Push / email subscription state | Standard | SDK, preferences | Channel routing |
 | Total sessions, First Used App | Collected by the Braze SDK | SDK | Entry filters for the browsing Canvas (02, section 4) |
 
-`saved_restaurants` stores IDs because they stay stable when a restaurant changes its name; the message looks up the current name and deep link from the `restaurants` Catalog. The `restaurant_saved` event's `restaurant_id` reaches the message as Canvas context (`context.${restaurant_id}`), so the message names the restaurant that triggered entry and uses `saved_restaurants` as the fallback.
+`saved_restaurants` stores IDs because they stay stable when a restaurant changes its name; the message looks up the current name and card details from the `restaurants` Catalog and builds the link from `location_id`. Address and distance come from the recommendations endpoint instead, because distance depends on where the user is. The `restaurant_saved` event's `restaurant_id` reaches the message as Canvas context (`context.${restaurant_id}`), so the message names the restaurant that triggered entry and uses `saved_restaurants` as the fallback.
 
 The referral reward is its own record, not a wallet balance. The app's terms say a Reward applies only when the food and beverage subtotal meets its minimum and the bill is paid in the app, and that it can't be combined with inKind Cash, Cash Back, or other wallet balances. So the journey reads the reward's amount and minimum directly.
 

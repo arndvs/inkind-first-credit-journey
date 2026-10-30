@@ -24,10 +24,8 @@
   - The Connected Content call only runs in case 2: every send from the browsing
     Canvas, and only fallback sends from the save Canvas. The endpoint is a
     placeholder for a recommendations service.
-  - This copy is shared by push and email. In the HTML email version, add | escape
-    to restaurant names, link the saved restaurant with items[0].deep_link, and add
-    how to use the reward: pay the bill in the app and pick it at checkout.
-    Push text doesn't need any of that.
+  - This copy is shared by push and email. liquid/ splits it into Content Blocks and
+    builds the HTML email; a test checks that its push copy matches this file.
   - Attribute, Catalog, and field names are illustrative and to be mapped to inKind's schema.
 {%- endcomment -%}
 
